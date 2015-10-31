@@ -1,0 +1,28 @@
+kxr_tt_app_homepage:
+    path:     /
+    defaults: { _controller: kxrTTAppBundle:Default:index }
+
+kxr_tt_app_setup:
+    path:     /setup
+    defaults: { _controller: kxrTTAppBundle:Setup:index }
+
+kxr_tt_app_test:
+    path:     /test
+    defaults: { _controller: kxrTTAppBundle:Test:index }
+
+kxr_tt_app_takedown:
+    path:     /takedown
+    defaults: { _controller: kxrTTAppBundle:Takedown:index }
+
+kxr_tt_app_transfer:
+    path:     /transfer
+    defaults: { _controller: kxrTTAppBundle:Transfer:index }
+
+kxr_tt_app_count:
+    path:     /count
+    defaults: { _controller: kxrTTAppBundle:Count:index }
+
+kxr_tt_app_teardown:
+    path:     /teardown
+    defaults: { _controller: kxrTTAppBundle:Teardown:index }
+

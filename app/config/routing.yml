@@ -1,0 +1,3 @@
+kxr_tt_app:
+    resource: "@kxrTTAppBundle/Resources/config/routing.yml"
+    prefix:   /
