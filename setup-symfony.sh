@@ -1,8 +1,8 @@
 #!/bin/bash
-su -
 echo "$(date): I am: $(whoami)" >> /tmp/cd_debug
 mkdir -p /var/www/ttapp
 cd /var/www/ttapp
+export COMPOSER_HOME="/root"
 export SYMFONY_ENV=prod
 /bin/composer install --no-dev --optimize-autoloader --no-interaction &>> /tmp/cd_debug
 /usr/bin/php /var/www/ttapp/app/console cache:clear --env=prod --no-debug &>> /tmp/cd_debug
