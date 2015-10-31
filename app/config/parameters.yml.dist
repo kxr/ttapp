@@ -2,11 +2,18 @@
 # Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
-    database_host:     127.0.0.1
-    database_port:     ~
-    database_name:     symfony
-    database_user:     root
-    database_password: ~
+    database-am_host:     pgsql-dbam.host
+    database-am_port:     5432
+    database-am_name:     ttdb-am
+    database-am_user:     ttdbamuser
+    database-am_password: Z3qrN2n1lkhoSh4K20Oz
+
+    database-nz_host:     pgsql-dbnz.host
+    database-nz_port:     5433
+    database-nz_name:     ttdb-nz
+    database-nz_user:     ttdbnzuser
+    database-nz_password: B6Pmbf2eeOfVPSbQiJL1
+
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"
 
@@ -16,4 +23,4 @@ parameters:
     mailer_password:   ~
 
     # A secret key that's used to generate certain security-related tokens
-    secret:            ThisTokenIsNotSoSecretChangeIt
+    secret:            63SyO91vylVXBNvaAoxtwBvp7jLDGxkYsBueLeVcRCPYKM7qkdlUjKIZ9icb
