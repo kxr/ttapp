@@ -3,3 +3,7 @@ os: linux
 files:
   - source: /
     destination: /var/www/ttapp
+hooks:
+    AfterInstall:
+        - location: setup-symfony.sh
+        - timeout: 30
