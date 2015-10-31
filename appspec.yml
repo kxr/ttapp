@@ -9,10 +9,12 @@ permissions:
     owner: nginx
     group: nginx
     mode: 644
-    type: directory
+    type:
+      - directory
   - object: /var/www/ttapp/app/cache
     pattern: "**"
     owner: nginx
     group: nginx
     mode: 644
-    type: directory
+    type:
+      - directory
