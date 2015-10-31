@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "$(date): I am: $(whoami) >> /tmp/cd_debug
+echo "$(date): I am: $(whoami)" >> /tmp/cd_debug
 mkdir -p /var/www/ttapp
 cd /var/www/ttapp
 export SYMFONY_ENV=prod
