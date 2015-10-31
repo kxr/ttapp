@@ -4,6 +4,8 @@ files:
   - source: /
     destination: /var/www/ttapp
 hooks:
+    BeforeInstall:
+        - location: /bin/true
     AfterInstall:
         - location: setup-symfony.sh
         - timeout: 30
