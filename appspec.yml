@@ -4,17 +4,8 @@ files:
   - source: /
     destination: /var/www/ttapp
 permissions:
-  - object: /var/www/ttapp/app
-    pattern: "cache*"
+  - object: /var/www/ttapp
     owner: nginx
     group: nginx
-    mode: 644
-    type:
-      - directory
-  - object: /var/www/ttapp/app
-    pattern: "logs*"
-    owner: nginx
-    group: nginx
-    mode: 644
     type:
       - directory
