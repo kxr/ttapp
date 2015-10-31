@@ -3,9 +3,3 @@ os: linux
 files:
   - source: /
     destination: /var/www/ttapp
-permissions:
-  - object: /var/www/ttapp
-    owner: nginx
-    group: nginx
-    type:
-      - directory
