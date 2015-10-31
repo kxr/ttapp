@@ -1,4 +1,5 @@
 #!/bin/bash
+su -
 echo "$(date): I am: $(whoami)" >> /tmp/cd_debug
 mkdir -p /var/www/ttapp
 cd /var/www/ttapp
