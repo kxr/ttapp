@@ -13,9 +13,10 @@ class SetupController extends Controller {
         $webhook_payload = $request->request->get('payload');
 	if ( !empty( $webhook_payload ) ) {
 		$payload_params = json_decode($webhook_payload, true);
+		$head_commit_id = $payload_params['head_commit']['id'];
 	}
         $logger = $this->get('logger');
-        $logger->error(print_r($payload_params, true));
+        $logger->error(print_r($head_commit_id, true));
         return new Response( 'nananna' );
 
     }
