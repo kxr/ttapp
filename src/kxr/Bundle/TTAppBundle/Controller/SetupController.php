@@ -25,7 +25,7 @@ class SetupController extends Controller {
 			'revisionType' => 'GitHub',
 			'revision' => [
 				'repository' => 'kxr/ttapp',
-				'commitId' => $head_commit_id
+				'commitId' => "$head_commit_id"
 			]
 		]);
 	        $logger->error(print_r($DeploymentResult, true));
