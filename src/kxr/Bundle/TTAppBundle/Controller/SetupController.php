@@ -5,6 +5,7 @@ namespace kxr\Bundle\TTAppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Aws\CodeDeploy\CodeDeployClient;
 
 class SetupController extends Controller {
 
@@ -17,6 +18,18 @@ class SetupController extends Controller {
 	}
         $logger = $this->get('logger');
         $logger->error(print_r($head_commit_id, true));
-        return new Response( 'nananna' );
+
+	$CodeDeployClient = new CodeDeployClient( [ 'version' => 'latest', 'region' => 'us-east-1' ] );
+	$DeploymentResult = $CodeDeployClient -> createDeployment ([
+		'applicationName' => 'ttapp',
+		'deploymentGroupName' => 'ttapp_dg',
+		'revisionType' => 'GitHub',
+		'revision' => [
+			'repository' => 'kxr/ttapp',
+			'commitId' => $head_commit_id
+		]
+	]);
+        $logger->error(print_r($DeploymentResult, true));
+
     }
 }
