@@ -3,12 +3,13 @@
 namespace kxr\Bundle\TTAppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetupController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        return new Response('You called Setup');
+        return new Response( $request->query->post('test') );
     }
 }
