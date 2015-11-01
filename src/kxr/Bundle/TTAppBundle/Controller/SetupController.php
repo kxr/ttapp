@@ -19,7 +19,7 @@ class SetupController extends Controller {
         	$logger->error(print_r($head_commit_id, true));
 
 		$CodeDeployClient = new CodeDeployClient( [ 'version' => 'latest', 'region' => 'us-east-1' ] );
-		$DeploymentResult = $CodeDeployClient -> createDeployment ([
+		$DeploymentResult = $CodeDeployClient->createDeployment ([
 			'applicationName' => 'ttapp',
 			'deploymentGroupName' => 'ttapp_dg',
 			'revisionType' => 'GitHub',
