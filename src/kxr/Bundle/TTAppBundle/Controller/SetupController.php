@@ -18,7 +18,10 @@ class SetupController extends Controller {
         	$logger = $this->get('logger');
         	$logger->error(print_r($head_commit_id, true));
 
-		$CodeDeployClient = new CodeDeployClient( [ 'version' => 'latest', 'region' => 'us-east-1' ] );
+		$CodeDeployClient = new CodeDeployClient ([ 
+			'version' => 'latest',
+			'region' => 'us-east-1'
+		]);
 		$DeploymentResult = $CodeDeployClient->createDeployment ([
 			'applicationName' => 'ttapp',
 			'deploymentGroupName' => 'ttapp_dg',
@@ -32,5 +35,9 @@ class SetupController extends Controller {
 		]);
 	        $logger->error(print_r($DeploymentResult, true));
 	}
+	//TODO If /setup is visited normally, it would be nice
+	//to display the status of last deployment(s)
+	return new Response('This is a webhook for github');
+
     }
 }
