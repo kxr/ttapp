@@ -18,5 +18,6 @@ class SetupController extends Controller
         $logger->error(print_r($head_commit_id, true));
         return new Response( 'nananna' );
 
+
     }
 }
