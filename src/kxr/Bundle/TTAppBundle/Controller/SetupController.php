@@ -38,6 +38,5 @@ class SetupController extends Controller {
 	//TODO If /setup is visited normally, it would be nice
 	//to display the status of last deployment(s)
 	return new Response('This is a webhook for github');
-
     }
 }
