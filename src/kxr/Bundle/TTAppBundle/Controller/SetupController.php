@@ -12,10 +12,10 @@ class SetupController extends Controller
 {
     public function indexAction(Request $request)
     {
-        $webhook_post = $request->request->get('test');
-	$fs = new Filesystem();
-	$fs->dumpFile('/tmp/setup_postdata', var_dump($webhook_post) );
-        return new Response( 'dadaadada' );
+        $webhook_post = $request->request->all();
+	$logger = $this->get('setup_webhook');
+	$logger->info($webhook_post);
+        return new Response( 'nananna' );
 
     }
 }
