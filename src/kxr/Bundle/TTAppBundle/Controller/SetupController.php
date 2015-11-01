@@ -18,6 +18,5 @@ class SetupController extends Controller {
         $logger = $this->get('logger');
         $logger->error(print_r($head_commit_id, true));
         return new Response( 'nananna' );
-
     }
 }
