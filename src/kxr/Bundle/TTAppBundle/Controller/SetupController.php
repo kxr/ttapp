@@ -18,6 +18,5 @@ class SetupController extends Controller {
         $logger->error(print_r($payload_params, true));
         return new Response( 'nananna' );
 
-
     }
 }
