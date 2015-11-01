@@ -10,6 +10,6 @@ class SetupController extends Controller
 {
     public function indexAction(Request $request)
     {
-        return new Response( $request->query->post('test') );
+        return new Response( $request->request->get('test') );
     }
 }
