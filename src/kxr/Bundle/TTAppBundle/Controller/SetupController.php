@@ -12,9 +12,10 @@ class SetupController extends Controller
 {
     public function indexAction(Request $request)
     {
-        $webhook_post = $request->request->get('payload');
+        $webhook_payload = $request->request->get('payload');
+	$head_commit_id = $webhook_payload['head_commit']['id'];
         $logger = $this->get('logger');
-        $logger->error(print_r($webhook_post, true));
+        $logger->error(print_r($head_commit_id, true));
         return new Response( 'nananna' );
 
     }
