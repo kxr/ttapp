@@ -23,10 +23,10 @@ class SetupController extends Controller {
 			'applicationName' => 'ttapp',
 			'deploymentGroupName' => 'ttapp_dg',
 			'revisionType' => 'GitHub',
-			'revision' => [
+			'revision' => array(
 				'repository' => 'kxr/ttapp',
 				'commitId' => "$head_commit_id"
-			]
+			)
 		]);
 	        $logger->error(print_r($DeploymentResult, true));
 	}
