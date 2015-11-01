@@ -22,11 +22,13 @@ class SetupController extends Controller {
 		$DeploymentResult = $CodeDeployClient->createDeployment ([
 			'applicationName' => 'ttapp',
 			'deploymentGroupName' => 'ttapp_dg',
-			'revisionType' => 'GitHub',
-			'revision' => array(
-				'repository' => 'kxr/ttapp',
-				'commitId' => "$head_commit_id"
-			)
+			'revision' => [
+				'revisionType' => 'GitHub',
+				'gitHubLocation' => [
+					'repository' => 'kxr/ttapp',
+					'commitId' => "$head_commit_id"
+				]
+			]
 		]);
 	        $logger->error(print_r($DeploymentResult, true));
 	}
