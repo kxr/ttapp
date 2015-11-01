@@ -1,7 +1,3 @@
-kxr_tt_app_homepage:
-    path:     /
-    defaults: { _controller: kxrTTAppBundle:Default:index }
-
 kxr_tt_app_setup:
     path:     /setup
     defaults: { _controller: kxrTTAppBundle:Setup:index }
@@ -25,4 +21,12 @@ kxr_tt_app_count:
 kxr_tt_app_teardown:
     path:     /teardown
     defaults: { _controller: kxrTTAppBundle:Teardown:index }
+
+kxr_tt_app_homepage:
+    path:     /
+    defaults: { _controller: kxrTTAppBundle:Default:index }
+
+kxr_tt_app_catchall:
+    path:     /{catchall}
+    defaults: { _controller: kxrTTAppBundle:Default:index }
 

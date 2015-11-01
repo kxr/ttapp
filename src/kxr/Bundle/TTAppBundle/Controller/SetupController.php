@@ -31,7 +31,6 @@ class SetupController extends Controller {
 			]
 		]);
 	        $logger->error(print_r($DeploymentResult, true));
-
 	}
     }
 }
