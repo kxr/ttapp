@@ -15,21 +15,20 @@ class SetupController extends Controller {
 	if ( !empty( $webhook_payload ) ) {
 		$payload_params = json_decode($webhook_payload, true);
 		$head_commit_id = $payload_params['head_commit']['id'];
+        	$logger = $this->get('logger');
+        	$logger->error(print_r($head_commit_id, true));
+
+		$CodeDeployClient = new CodeDeployClient( [ 'version' => 'latest', 'region' => 'us-east-1' ] );
+		$DeploymentResult = $CodeDeployClient -> createDeployment ([
+			'applicationName' => 'ttapp',
+			'deploymentGroupName' => 'ttapp_dg',
+			'revisionType' => 'GitHub',
+			'revision' => [
+				'repository' => 'kxr/ttapp',
+				'commitId' => $head_commit_id
+			]
+		]);
+	        $logger->error(print_r($DeploymentResult, true));
 	}
-        $logger = $this->get('logger');
-        $logger->error(print_r($head_commit_id, true));
-
-	$CodeDeployClient = new CodeDeployClient( [ 'version' => 'latest', 'region' => 'us-east-1' ] );
-	$DeploymentResult = $CodeDeployClient -> createDeployment ([
-		'applicationName' => 'ttapp',
-		'deploymentGroupName' => 'ttapp_dg',
-		'revisionType' => 'GitHub',
-		'revision' => [
-			'repository' => 'kxr/ttapp',
-			'commitId' => $head_commit_id
-		]
-	]);
-        $logger->error(print_r($DeploymentResult, true));
-
     }
 }
