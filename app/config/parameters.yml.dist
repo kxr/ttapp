@@ -3,16 +3,16 @@
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
     database-am_driver:   pdo_pgsql
-    database-am_host:     pgsql-dbam.host
+    database-am_host:     ilb-dbam-UPDATEME
     database-am_port:     5432
-    database-am_name:     ttdb-am
+    database-am_name:     ttdbam
     database-am_user:     ttdbamuser
     database-am_password: Z3qrN2n1lkhoSh4K20Oz
 
     database-nz_driver:   pdo_pgsql
-    database-nz_host:     pgsql-dbnz.host
+    database-nz_host:     ilb-dbnz-UPDATEME
     database-nz_port:     5433
-    database-nz_name:     ttdb-nz
+    database-nz_name:     ttdbnz
     database-nz_user:     ttdbnzuser
     database-nz_password: B6Pmbf2eeOfVPSbQiJL1
 
