@@ -4,7 +4,7 @@ files:
   - source: /
     destination: /var/www/ttapp
 hooks:
-   AfterInstall:
+   BeforeInstall:
      - location: delete-application.sh
        timeout: 180
    AfterInstall:
