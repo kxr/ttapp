@@ -5,5 +5,8 @@ files:
     destination: /var/www/ttapp
 hooks:
    AfterInstall:
+     - location: delete-application.sh
+       timeout: 180
+   AfterInstall:
      - location: setup-symfony.sh
        timeout: 180
