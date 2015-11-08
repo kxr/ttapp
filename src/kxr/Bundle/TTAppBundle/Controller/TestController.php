@@ -34,6 +34,6 @@ $endings = array( "r", "n", "l", "", "", "", "" );
 	// Random age between 1 and 120
 	$age = rand ( 1, 120);
 
-        return new Response( 'First Name: ' . $first_name . ' Last Name: ' . $last_name . ' Age: ' . $age );
+        return new Response( '<b>First Name:</b> ' . $first_name . '<br><b>Last Name:</b> ' . $last_name . '<br><b>Age:</b> ' . $age );
     }
 }
