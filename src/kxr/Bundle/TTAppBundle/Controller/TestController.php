@@ -31,6 +31,9 @@ $endings = array( "r", "n", "l", "", "", "", "" );
 					$vowels[array_rand($vowels,1)] .
 					$endings[array_rand($endings,1)] );
 
-        return new Response( 'First Name: ' . $first_name . 'Last Name: ' . $last_name );
+	// Random age between 1 and 120
+	$age = rand ( 1, 120);
+
+        return new Response( 'First Name: ' . $first_name . ' Last Name: ' . $last_name . ' Age: ' . $age );
     }
 }
