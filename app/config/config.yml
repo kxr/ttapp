@@ -66,21 +66,21 @@ doctrine:
         #   3. Uncomment next line:
         #     path:     "%database_path%"
         connections:
-                db-am:
-                        driver:   "%database-am_driver%"
-                        host:     "%database-am_host%"
-                        port:     "%database-am_port%"
-                        dbname:   "%database-am_name%"
-                        user:     "%database-am_user%"
-                        password: "%database-am_password%"
+                dbam:
+                        driver:   "%dbam_driver%"
+                        host:     "%dbam_host%"
+                        port:     "%dbam_port%"
+                        dbname:   "%dbam_name%"
+                        user:     "%dbam_user%"
+                        password: "%dbam_password%"
                         charset:  UTF8
-                db-nz:
-                        driver:   "%database-nz_driver%"
-                        host:     "%database-nz_host%"
-                        port:     "%database-nz_port%"
-                        dbname:   "%database-nz_name%"
-                        user:     "%database-nz_user%"
-                        password: "%database-nz_password%"
+                dbnz:
+                        driver:   "%dbnz_driver%"
+                        host:     "%dbnz_host%"
+                        port:     "%dbnz_port%"
+                        dbname:   "%dbnz_name%"
+                        user:     "%dbnz_user%"
+                        password: "%dbnz_password%"
                         charset:  UTF8
 
     orm:

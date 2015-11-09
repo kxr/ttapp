@@ -2,19 +2,19 @@
 # Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
-    database-am_driver:   pdo_pgsql
-    database-am_host:     ilb-dbam-UPDATEME
-    database-am_port:     5432
-    database-am_name:     ttdbam
-    database-am_user:     ttdbamuser
-    database-am_password: Z3qrN2n1lkhoSh4K20Oz
+    dbam_driver:   pdo_pgsql
+    dbam_host:     ilb-dbam-UPDATEME
+    dbam_port:     5432
+    dbam_name:     ttdbam
+    dbam_user:     ttdbamuser
+    dbam_password: Z3qrN2n1lkhoSh4K20Oz
 
-    database-nz_driver:   pdo_pgsql
-    database-nz_host:     ilb-dbnz-UPDATEME
-    database-nz_port:     5433
-    database-nz_name:     ttdbnz
-    database-nz_user:     ttdbnzuser
-    database-nz_password: B6Pmbf2eeOfVPSbQiJL1
+    dbnz_driver:   pdo_pgsql
+    dbnz_host:     ilb-dbnz-UPDATEME
+    dbnz_port:     5433
+    dbnz_name:     ttdbnz
+    dbnz_user:     ttdbnzuser
+    dbnz_password: B6Pmbf2eeOfVPSbQiJL1
 
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"

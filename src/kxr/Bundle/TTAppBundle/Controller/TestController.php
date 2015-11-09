@@ -39,9 +39,11 @@ class TestController extends Controller
 	// We check the first character of the name is b/w a-m or n-z
 	// ascii value comparison should be more efficient
 	if ( ord($random_char) <= 109 )
-		$db='dbam';
+		$db='doctrine.dbal.db-am_connection';
 	else
-		$db='dbnz';
+		$db='doctrine.dbal.db-nz_connection';
+
+	
 
         return new Response( '<b>First Name:</b> ' . $first_name . '<br><b>Last Name:</b> ' . $last_name . '<br><b>Age:</b> ' . $age . '<br> Database: ' . $db );
     }
