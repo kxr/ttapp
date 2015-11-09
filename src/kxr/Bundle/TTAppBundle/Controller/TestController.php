@@ -35,6 +35,14 @@ class TestController extends Controller
 	// Random age between 1 and 120
 	$age = rand ( 1, 120);
 
-        return new Response( '<b>First Name:</b> ' . $first_name . '<br><b>Last Name:</b> ' . $last_name . '<br><b>Age:</b> ' . $age );
+
+	// We check the first character of the name is b/w a-m or n-z
+	// ascii value comparison should be more efficient
+	if ( ord($random_char) <= 109 )
+		$db='dbam';
+	else
+		$db='dbnz'
+
+        return new Response( '<b>First Name:</b> ' . $first_name . '<br><b>Last Name:</b> ' . $last_name . '<br><b>Age:</b> ' . $age . '<br> Database: ' . $db );
     }
 }
