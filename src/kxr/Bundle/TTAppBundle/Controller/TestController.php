@@ -39,12 +39,20 @@ class TestController extends Controller
 	// We check the first character of the name is b/w a-m or n-z
 	// ascii value comparison should be more efficient
 	if ( ord($random_char) <= 109 )
-		$db='doctrine.dbal.db-am_connection';
+		$shard='dbam';
 	else
-		$db='doctrine.dbal.db-nz_connection';
+		$shard='doctrine.dbal.db-nz_connection';
 
-	
+	// Get the appropriate db connection
+	$conn = $this->get('doctrine.dbal.'.$shard.'_connection');
 
-        return new Response( '<b>First Name:</b> ' . $first_name . '<br><b>Last Name:</b> ' . $last_name . '<br><b>Age:</b> ' . $age . '<br> Database: ' . $db );
+	// Insert data into database
+	$statement = $conn->prepare("INSERT INTO users (fname, lname, age) VALUES (:fname, :lname, :age)");
+	$statement->bindValue(':fname', $first_name); 
+	$statement->bindValue(':lname', $last_name); 
+	$statement->bindValue(':age', $age); 
+	$statement->execute();
+
+        return new Response( '<b>First Name:</b> ' . $first_name . '<br><b>Last Name:</b> ' . $last_name . '<br><b>Age:</b> ' . $age . '<br> Database: ' . $shard );
     }
 }
