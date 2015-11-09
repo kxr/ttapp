@@ -41,7 +41,7 @@ class TestController extends Controller
 	if ( ord($random_char) <= 109 )
 		$db='dbam';
 	else
-		$db='dbnz'
+		$db='dbnz';
 
         return new Response( '<b>First Name:</b> ' . $first_name . '<br><b>Last Name:</b> ' . $last_name . '<br><b>Age:</b> ' . $age . '<br> Database: ' . $db );
     }
