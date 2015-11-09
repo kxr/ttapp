@@ -41,7 +41,7 @@ class TestController extends Controller
 	if ( ord($random_char) <= 109 )
 		$shard='dbam';
 	else
-		$shard='doctrine.dbal.db-nz_connection';
+		$shard='dbnz';
 
 	// Get the appropriate db connection
 	$conn = $this->get('doctrine.dbal.'.$shard.'_connection');
