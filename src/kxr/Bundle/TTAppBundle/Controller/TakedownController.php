@@ -8,11 +8,40 @@ use Aws\Ec2\Ec2Client;
 
 class TakedownController extends Controller
 {
+    public function stopitAction($node)
+    {
+	if ( $node != 'pg1' and $node != 'pg2' )
+		return new Response( "Sorry, this controller cannot take down anything other than pg1 or pg2" );
+
+	$Ec2Client = new Ec2Client ([
+		'version' => 'latest',
+		'region' => 'us-east-1'
+	]);
+	// Find the instance id
+	$ec2_desc = $Ec2Client->DescribeInstances( array(
+		'Filters' => array( array(
+				'Name' => 'tag:Name',
+				'Values' => array($node) ) ) ) );
+	if (!$ec2_desc)
+		return new Response( "Sorry didnt find any instance by Name tag: $node" );
+	$instid = $ec2_desc['Reservations']['0']['Instances']['0']['InstanceId'];
+	$inststate = $ec2_desc['Reservations']['0']['Instances']['0']['State']['Name'];
+
+	$stopresponse = $Ec2Client->stopInstances(array(
+		'InstanceIds' => array($instid),
+		'Force' => true ) );
+
+	return new Response(	"<b>Sent force shutdown call on $node($instid)</b> <br />".
+				"The previous state was: $inststate<br />".
+				"Got the following response:".
+				"<pre>".
+				print_r($stopresponse['StoppingInstances'], true).
+				print_r($stopresponse['@metadata'],true).
+				"</pre>" );
+	
+    }
     public function indexAction()
     {
-
-	// To be safe we will make sure that it is safe to take down a node
-	// Additionally we will show the the status of each node
 
 	//Get the internal IP of the both the node pg1 and pg2
 	$Ec2Client = new Ec2Client ([
@@ -20,23 +49,20 @@ class TakedownController extends Controller
 		'region' => 'us-east-1'
 	]);
 	// name => instanceid
-	$nodes = ['pg1' => '' , 'pg2' => ''];
+	$nodes = ['pg1' , 'pg2' ];
 	// db => port
 	$dbs = array( 'dbam' => '5432', 'dbnz' => '5433' );
 	// status
 	$status = [];
 	// Iterate through each node
-	foreach ( $nodes as $node => $iid ){
+	foreach ( $nodes as $node ){
 		$status[$node] = [];
 		// Get node IP
-		$ec2c = $Ec2Client->DescribeInstances( array(
-			'Filters' => array(
-				array(
+		$ip = $Ec2Client->DescribeInstances( array(
+			'Filters' => array( array(
 					'Name' => 'tag:Name',
-					'Values' => array($node) ) ) ) );
-		$ip = $ec2c['Reservations']['0']['Instances']['0']['PrivateIpAddress'];
-		// While we are at it, populate the instance id
-		$nodes[$node] = $ec2c['Reservations']['0']['Instances']['0']['InstanceId'];
+					'Values' => array($node) ) ) ) )
+			['Reservations']['0']['Instances']['0']['PrivateIpAddress'];
 		// Iterate through each db
 		foreach ( $dbs as $db => $dbport ) {
 			$status[$node][$db] = '';
@@ -56,10 +82,15 @@ class TakedownController extends Controller
 			
 		}
 	}
-
-	
-
-
-	return new Response( print_r($status, true).print_r($nodes, true) );
+	// Should have done this is using twig but short on time :(
+	return new Response(	'Following is the status of the cluster'.
+				'<pre>'.print_r($status, true).'</pre>'.
+				'<hr />'.
+				'<a href=/takedown/pg1>Click here to stop PG1</a>'.
+				'&emsp;&emsp;'.
+				'<a href=/takedown/pg2>Click here to stop PG2</a>'.
+				'<br />'.
+				'Be carefull, it will blindly stop the instance'
+	);
     }
 }

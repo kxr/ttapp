@@ -9,6 +9,12 @@ kxr_tt_app_test:
 kxr_tt_app_takedown:
     path:     /takedown
     defaults: { _controller: kxrTTAppBundle:Takedown:index }
+kxr_tt_app_takedown_:
+    path:     /takedown/
+    defaults: { _controller: kxrTTAppBundle:Takedown:index }
+kxr_tt_app_takedown_instid:
+    path:     /takedown/{node}
+    defaults: { _controller: kxrTTAppBundle:Takedown:stopit }
 
 kxr_tt_app_transfer:
     path:     /transfer
