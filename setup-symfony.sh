@@ -3,9 +3,12 @@
 ELB_DBAM_DNS=$(aws elb describe-load-balancers --load-balancer-names ilb-dbam | jq -r '.LoadBalancerDescriptions[].DNSName')
 ELB_DBNZ_DNS=$(aws elb describe-load-balancers --load-balancer-names ilb-dbnz | jq -r '.LoadBalancerDescriptions[].DNSName')
 
+MONGODB_IP=$(aws ec2 describe-instances --filter "Name=tag:Name,Values=mongodb" | jq -r '.Reservations[].Instances[].PrivateIpAddress')
+
 cd /var/www/ttapp
 sed -i "s/ilb-dbam-UPDATEME/$ELB_DBAM_DNS/" app/config/parameters.yml.dist
 sed -i "s/ilb-dbnz-UPDATEME/$ELB_DBNZ_DNS/" app/config/parameters.yml.dist
+sed -i "s/mongodb-UPDATEME/$MONGODB_IP/" app/config/parameters.yml.dist
 
 export COMPOSER_HOME="/root"
 export SYMFONY_ENV=prod
