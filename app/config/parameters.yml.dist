@@ -16,6 +16,9 @@ parameters:
     dbnz_user:     ttdbnzuser
     dbnz_password: B6Pmbf2eeOfVPSbQiJL1
 
+    mongodb_server: mongodb-UPDATEME
+    mongodb_port:   27017
+
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"
 

@@ -66,7 +66,7 @@ class TakedownController extends Controller
 		// Iterate through each db
 		foreach ( $dbs as $db => $dbport ) {
 			$status[$node][$db] = '';
-			$dbconn = pg_connect("host=$ip port=$dbport user=monuser dbname=postgres connect_timeout=10");
+			$dbconn = pg_connect("host=$ip port=$dbport user=monuser dbname=postgres connect_timeout=5");
 			if (!$dbconn)
 				$status[$node][$db] = 'DOWN';
 			else {
