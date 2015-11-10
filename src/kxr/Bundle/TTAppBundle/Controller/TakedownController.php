@@ -28,6 +28,6 @@ class TakedownController extends Controller
 		)
 	) );
 
-	return new Response($pg1);
+	return new Response( print_r($pg1, true));
     }
 }
