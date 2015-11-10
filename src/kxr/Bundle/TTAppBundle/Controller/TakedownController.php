@@ -16,6 +16,7 @@ class TakedownController extends Controller
 
 	//Get the internal IP of the first node pg1
 	$Ec2Client = new Ec2Client ([
+		'version' => 'latest',
 		'region' => 'us-east-1'
 	]);
 	$pg1 = $Ec2Client->DescribeInstances( array(
