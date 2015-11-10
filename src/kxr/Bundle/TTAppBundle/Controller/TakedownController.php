@@ -23,7 +23,7 @@ class TakedownController extends Controller
 		'Filters' => array(
 			array(
 				'Name' => 'tag:Name',
-				'Values' => 'pg1',
+				'Values' => array('pg1'),
 			)
 		)
 	) );
