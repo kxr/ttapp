@@ -4,93 +4,93 @@ namespace kxr\Bundle\TTAppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
-use Aws\Ec2\Ec2Client;
+use MongoClient;
+#use kxr\Bundle\TTAppBundle\Entity\Users;
 
-class TakedownController extends Controller
+class TransferController extends Controller
 {
-    public function stopitAction($node)
-    {
-	if ( $node != 'pg1' and $node != 'pg2' )
-		return new Response( "Sorry, this controller cannot take down anything other than pg1 or pg2" );
-
-	$Ec2Client = new Ec2Client ([
-		'version' => 'latest',
-		'region' => 'us-east-1'
-	]);
-	// Find the instance id
-	$ec2_desc = $Ec2Client->DescribeInstances( array(
-		'Filters' => array( array(
-				'Name' => 'tag:Name',
-				'Values' => array($node) ) ) ) );
-	if (!$ec2_desc)
-		return new Response( "Sorry didnt find any instance by Name tag: $node" );
-	$instid = $ec2_desc['Reservations']['0']['Instances']['0']['InstanceId'];
-	$inststate = $ec2_desc['Reservations']['0']['Instances']['0']['State']['Name'];
-
-	$stopresponse = $Ec2Client->stopInstances(array(
-		'InstanceIds' => array($instid),
-		'Force' => true ) );
-
-	return new Response(	"<b>Sent force shutdown call on $node($instid)</b> <br />".
-				"The previous state was: $inststate<br />".
-				"Got the following response:".
-				"<pre>".
-				print_r($stopresponse['StoppingInstances'], true).
-				print_r($stopresponse['@metadata'],true).
-				"</pre>" );
-	
-    }
     public function indexAction()
     {
+	// Connect to the Mongodb database
+	$Mongo = new MongoClient( 'mongodb://'.
+					$this->getParameter('mongodb_server').
+					':'.
+					$this->getParameter('mongodb_port').
+					'/?w=0' );
+	if (!$Mongo)
+		return new Response('Error connecting to mongodb');
+	$Collection = $Mongo->ttdb->users;
 
-	//Get the internal IP of the both the node pg1 and pg2
-	$Ec2Client = new Ec2Client ([
-		'version' => 'latest',
-		'region' => 'us-east-1'
-	]);
-	// name => instanceid
-	$nodes = ['pg1' , 'pg2' ];
-	// db => port
-	$dbs = array( 'dbam' => '5432', 'dbnz' => '5433' );
-	// status
-	$status = [];
-	// Iterate through each node
-	foreach ( $nodes as $node ){
-		$status[$node] = [];
-		// Get node IP
-		$ip = $Ec2Client->DescribeInstances( array(
-			'Filters' => array( array(
-					'Name' => 'tag:Name',
-					'Values' => array($node) ) ) ) )
-			['Reservations']['0']['Instances']['0']['PrivateIpAddress'];
-		// Iterate through each db
-		foreach ( $dbs as $db => $dbport ) {
-			$status[$node][$db] = '';
-			$dbconn = pg_connect("host=$ip port=$dbport user=monuser dbname=postgres connect_timeout=5");
-			if (!$dbconn)
-				$status[$node][$db] = 'DOWN';
-			else {
-				$res = pg_query($dbconn, 'select pg_is_in_recovery()');
-				$stat = pg_fetch_assoc($res);
-				if ( $stat['pg_is_in_recovery'] == 't' )
-					$status[$node][$db] = 'SLAVE';
-				elseif ( $stat['pg_is_in_recovery'] == 'f' )
-					$status[$node][$db] = 'MASTER';
-				else
-					$status[$node][$db] = 'UNKNOWN';
-			}
-			
+	// Copy rows in batches to Mongodb to
+	// Keep the memory foot print per query low
+	//
+	// This can be done with doctrine's orm's interation feature
+	// http://doctrine-orm.readthedocs.org/projects/doctrine-orm/
+	// en/latest/reference/batch-processing.html#iterating-large-results-for-data-processing
+	// I'll try to accomplish that with postgresql's scroll feature
+	$cursor_batch_size = 1000; // 1000 records assoc array ~= 162KB
+	// Some variables to report
+	$counter = [	'dbs_to_process'	=> [],
+			'last_entry'		=> ['dbam'=>0,'dbnz'=>0],
+			'rows_count' 		=> ['dbam'=>0,'dbnz'=>0],
+			'batch_iterations'	=> ['dbam'=>0,'dbnz'=>0],
+			'copy_time'		=> ['dbam'=>0,'dbnz'=>0],
+			'delete_time'		=> ['dbam'=>0,'dbnz'=>0]		];
+
+	// Create database connections,
+	// Fetch the latest entry ids from both the database,
+	// and check if we have any thing to process
+	$conn=[];
+	foreach ( ['dbam', 'dbnz'] as $db ) {
+		$conn[$db] = $this->get('doctrine.dbal.'.$db.'_connection');
+		// Get the last entry's id of our users table from both databases
+		$counter['last_entry'][$db] = $conn[$db]->fetchAssoc('SELECT MAX(id) FROM users')['max'];
+		if ( $counter['last_entry'][$db] ) {
+			array_push( $counter['dbs_to_process'], "$db" );
 		}
 	}
-	// Should have done this is using twig but short on time :(
-	return new Response(	'Following is the status of the cluster'.
-				'<pre>'.print_r($status, true).'</pre>'.
-				'<hr />'.
-				'<a href=/takedown/pg1>Click here to stop PG1</a>'.
-				'&emsp;&emsp;'.
-				'<a href=/takedown/pg2>Click here to stop PG2</a>'.
-				'<br />'.
-				'Be carefull, it will blindly stop the instance'
-	);
-    }
+	if ( count( $counter['dbs_to_process'] )  > 0 ) {
+		foreach ( $counter['dbs_to_process'] as $db ) {
+			// Begin transaction block
+			$conn[$db]->beginTransaction();
+			// Create the cursor
+			$conn[$db]->executeQuery( "DECLARE cur NO SCROLL CURSOR FOR (SELECT * FROM users WHERE id <= ".$counter['last_entry'][$db].")" );
+			$timer = microtime(true);
+			do {
+				// Fetch batch_size rows from the cursor
+				$cursor_batch = $conn[$db]->fetchAll( "FETCH $cursor_batch_size FROM cur" );
+				// Directly batch-insert them into mongodb
+				$cursor_count = count($cursor_batch);
+				if ( $cursor_count > 0 ) {
+					$Collection->batchInsert( $cursor_batch );
+					$counter['rows_count'][$db] += $cursor_count;
+					$counter['batch_iterations'][$db] += 1;		
+				}
+			} while ( $cursor_count > 0 );
+			$conn[$db]->executeQuery( "CLOSE cur" );
+			//$conn[$db]->commit();
+			$counter['copy_time'][$db] = microtime(true) - $timer;
+	
+			// Bulk delete the rows from pgsql
+			$timer = microtime(true);
+			$conn[$db]->executeQuery('DELETE FROM users WHERE  id <= '.$counter['last_entry'][$db] );
+			$conn[$db]->commit();
+			$counter['delete_time'][$db] = microtime(true) - $timer;
+		}	
+	
+		return new Response(	"<b>Transaction Summary:</b>".
+					"<pre>".
+					"cursor_batch_size => ".$cursor_batch_size.
+					"</pre><pre>".
+					print_r( $counter, true ).
+					"</pre>"
+				);
+	}
+	else
+		return new Response( "<b>Didn't find any record in the databases to process</b>".
+					"<pre>".
+					print_r( $counter, true ).
+					"</pre>"
+				);
+   }
 }
