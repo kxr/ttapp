@@ -10,19 +10,14 @@ class TeardownController extends Controller
 {
     public function indexAction()
     {
-	// This endpoint will remove any instances that were added
-	// by the launch configuration
+	// This endpoint will send stop signal to all ec2 instances
 
-	// Launch configuration filter
-	$lc_filter = [ 'Name' => 'tag:Type', 'Values' => ['Autoscale'] ];
 	$Ec2Client = new Ec2Client ([
 		'version' => 'latest',
 		'region' => 'us-east-1'
 	]);
-	// Find the instance id
-	$reservations = $Ec2Client->DescribeInstances( array(
-		'Filters' => array( $lc_filter ) ) )
-	['Reservations'];
+	// Find the instance ids
+	$reservations = $Ec2Client->DescribeInstances()['Reservations'];
  
         if (!$reservations) 
                 return new Response( 'Sorry didnt find any instance by tag Type: "Autoscale"' );
@@ -32,10 +27,22 @@ class TeardownController extends Controller
 			foreach ( $reservation['Instances'] as $instance )
 				array_push( $inst_list, $instance['InstanceId']);
 
-		return new Response( 'Found the following instances:'.
+	$term_resp = $Ec2Client->terminateInstances(array(
+		'DryRun' => true,
+		'InstanceIds' => $inst_list,
+		'Force' => true ) );
+
+		return new Response( 'Terminating the following instances:'.
 					'<pre>'.
 					print_r($inst_list, true).
-					'</pre>'
+					'</pre>'.
+					'Got the following respose:'.
+					'<pre>'.
+					print_r($term_resp, true).
+					'</pre>'.
+					'<hr />'.
+					'Note: The terminate call is set in dry-run mode,'.
+					'Comment it from the code to actually terminate all instances'
 				);
     }
 }
